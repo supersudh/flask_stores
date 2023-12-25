@@ -2,6 +2,7 @@ import os
 from flask import Flask, jsonify
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 import secrets
 
 from db import db
@@ -26,6 +27,7 @@ def create_app(db_url=None):
     app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv(
         "DATABASE_URL", "sqlite:///data.db")
     db.init_app(app)
+    migrate = Migrate(app, db)
     api = Api(app)
     app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
     jwt = JWTManager(app)
